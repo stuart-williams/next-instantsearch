@@ -15,7 +15,7 @@ type WithInstantSearchOptions = {
 };
 
 const withInstantSearch = (options: WithInstantSearchOptions) => (
-  WrappedComponent: NextComponentType<NextPageContext>
+  WrappedComponent: NextComponentType | any
 ) => {
   const InstantSearchApp = (props: any) => {
     const [searchState, setSearchState] = useState(props.searchState);
