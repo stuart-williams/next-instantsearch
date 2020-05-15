@@ -66,6 +66,7 @@ Page.getInitialProps = async (ctx: NextPageContext) => {
   };
 
   return {
+    indexName: "instant_search",
     searchState: {
       refinementList: {
         categories: CATEGORY_MAP[category] || [],
@@ -75,6 +76,5 @@ Page.getInitialProps = async (ctx: NextPageContext) => {
 };
 
 export default withInstantSearch({
-  indexName: "instant_search",
-  searchClient:,
+  searchClient,
 })(Page);
