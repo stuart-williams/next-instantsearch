@@ -2,7 +2,7 @@ import { SearchClient } from "@algolia/client-search";
 import merge from "deepmerge";
 import hoistNonReactStatics from "hoist-non-react-statics";
 import { NextComponentType, NextPageContext } from "next";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import React, { useState } from "react";
 import { InstantSearch } from "react-instantsearch-dom";
 import { findResultsState } from "react-instantsearch-dom/server";
@@ -12,7 +12,7 @@ import { createURL, pathToSearchState } from "./utils";
 type WithInstantSearchOptions = {
   searchClient: SearchClient;
   indexName?: string;
-  onSearchStateChange?: (searchState: any) => any;
+  onSearchStateChange?: (searchState: any, router: NextRouter) => any;
 };
 
 const withInstantSearch = (options: WithInstantSearchOptions) => (
@@ -27,7 +27,7 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
       setSearchState(state);
 
       if (options.onSearchStateChange) {
-        options.onSearchStateChange(state);
+        options.onSearchStateChange(state, router);
       } else {
         router.push(router.pathname, router.asPath + createURL(state), {
           shallow: true,
