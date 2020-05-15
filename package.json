@@ -34,7 +34,6 @@
     "@types/react": "^16.9.35",
     "@types/react-instantsearch-dom": "^6.3.0",
     "algoliasearch": "^4.2.0",
-    "deepmerge": "^4.2.2",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "jest": "^26.0.1",
@@ -56,6 +55,13 @@
   },
   "dependencies": {
     "hoist-non-react-statics": "^3.3.2",
-    "qs": "^6.9.4"
+    "qs": "^6.9.4",
+    "deepmerge": "^4.2.2"
+  },
+  "peerDependencies": {
+    "algoliasearch": ">= 4.x",
+    "react-instantsearch-dom": ">= 6.x",
+    "next": ">= 9.x",
+    "react": ">= 16.3"
   }
 }
