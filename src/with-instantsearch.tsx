@@ -32,7 +32,6 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
 
     return (
       <InstantSearch
-        {...props}
         indexName={indexName}
         searchState={searchState}
         searchClient={options.searchClient}

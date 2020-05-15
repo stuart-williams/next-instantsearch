@@ -1,4 +1,4 @@
-const mockFindResultsState = jest.fn().mockResolvedValue("results_state");
+const mockFindResultsState = jest.fn().mockResolvedValue("some results");
 
 import algoliasearch from "algoliasearch/lite";
 import { mount } from "enzyme";
@@ -17,61 +17,79 @@ describe("withInstantSearch", () => {
 
   it("should handle SSR", async () => {
     const asPath = "/?refinementList%5Bcategories%5D%5B0%5D=Appliances&page=1";
-    const searchState = {
+
+    const expectedSearchState = {
       refinementList: {
-        categories: ["Appliances"],
+        categories: ["Appliances", "TV & Home Theater"],
       },
       page: "1",
     };
+
     const ctx = { asPath } as NextPageContext;
 
+    // Create mock page component
     const Component = () => null;
     Component.getInitialProps = jest.fn().mockResolvedValue({
       foo: true,
+      searchState: {
+        refinementList: {
+          categories: ["TV & Home Theater"],
+        },
+      },
     });
 
+    // Wrap it with hoc
     const WrappedComponent = withInstantSearch({ indexName, searchClient })(
       Component
     );
 
+    // Simulate getInitialProps lifecycle
     const pageProps = await WrappedComponent.getInitialProps(ctx);
 
+    // Check wrapped component getInitialProps was called
     expect(Component.getInitialProps).toHaveBeenCalledWith(ctx);
 
-    expect(mockFindResultsState.mock.calls[0][0].name).toBe("InstantSearchApp");
-
+    // Check react-instantsearch-dom/server SSR function was called
     expect(mockFindResultsState.mock.calls[0][1]).toEqual({
       indexName,
       searchClient,
-      searchState,
+      searchState: expectedSearchState,
     });
 
+    // Check pageProps contains merged searchState and SSR resultsState
     expect(pageProps).toEqual({
       foo: true,
       indexName,
-      searchState,
-      resultsState: "results_state",
+      searchState: expectedSearchState,
+      resultsState: "some results",
     });
 
-    // Set results state undefined to prevent InstantSearch crapping out
+    // Set resultsState undefined to prevent InstantSearch crapping out
     const wrapper = mount(
       <WrappedComponent {...pageProps} resultsState={undefined} bar={true} />
     );
 
-    expect(wrapper.find("InstantSearchApp").props()).toEqual({
-      foo: true,
-      bar: true,
-      indexName,
-      searchState,
-      resultsState: undefined,
-    });
+    // Check correct props are passed to the InstantSearch provider
+    expect(wrapper.find("InstantSearch").prop("indexName")).toEqual(indexName);
+    expect(wrapper.find("InstantSearch").prop("searchState")).toEqual(
+      expectedSearchState
+    );
+    expect(wrapper.find("InstantSearch").prop("searchClient")).toEqual(
+      searchClient
+    );
+    expect(wrapper.find("InstantSearch").prop("createURL")).toEqual(
+      expect.any(Function)
+    );
+    expect(wrapper.find("InstantSearch").prop("onSearchStateChange")).toEqual(
+      expect.any(Function)
+    );
 
-    expect(wrapper.find(Component).props()).toEqual({
-      foo: true,
-      bar: true,
-      indexName,
-      searchState,
-      resultsState: undefined,
-    });
+    // Check correct props are passed to the wrapped component
+    expect(wrapper.find(Component).props()).toEqual(
+      expect.objectContaining({
+        foo: true,
+        bar: true,
+      })
+    );
   });
 });

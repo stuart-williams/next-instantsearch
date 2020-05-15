@@ -42,14 +42,7 @@
     "testEnvironment": "jsdom",
     "setupFiles": [
       "<rootDir>/jest.setup.ts"
-    ],
-    "globals": {
-      "window": {
-        "location": {
-          "pathname": "/foo/"
-        }
-      }
-    }
+    ]
   },
   "dependencies": {
     "hoist-non-react-statics": "^3.3.2",
