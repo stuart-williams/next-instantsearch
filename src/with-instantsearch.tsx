@@ -12,6 +12,7 @@ import { createURL, pathToSearchState } from "./utils";
 type WithInstantSearchOptions = {
   searchClient: SearchClient;
   indexName?: string;
+  onSearchStateChange?: (searchState: any) => any;
 };
 
 const withInstantSearch = (options: WithInstantSearchOptions) => (
@@ -25,9 +26,13 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
     const handleSearchStateChange = (state: any) => {
       setSearchState(state);
 
-      router.push(router.pathname, router.asPath + createURL(state), {
-        shallow: true,
-      });
+      if (options.onSearchStateChange) {
+        options.onSearchStateChange(state);
+      } else {
+        router.push(router.pathname, router.asPath + createURL(state), {
+          shallow: true,
+        });
+      }
     };
 
     return (
