@@ -1,6 +1,6 @@
 {
   "name": "next-instantsearch",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Server side rendering with Next.js and React InstantSearch",
   "keywords": [
     "next",
