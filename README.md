@@ -16,6 +16,8 @@ yarn add next-instantsearch
 
 ## Getting started
 
+Use the withInstantSearch HOC to configure [InstantSearch](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react/#the-instantsearch-root-widget) and enable [SSR](https://www.algolia.com/doc/guides/building-search-ui/going-further/server-side-rendering/react/#nextjs)!:
+
 ```javascript
 import algoliasearch from "algoliasearch/lite";
 import { withInstantSearch } from "next-instantsearch";
@@ -28,10 +30,7 @@ import {
   SearchBox,
 } from "react-instantsearch-dom";
 
-const searchClient = algoliasearch(
-  "your_app_id",
-  "your_api_key"
-);
+const searchClient = algoliasearch("your_app_id", "your_api_key");
 
 const HitComponent = ({ hit }) => <Highlight attribute="name" hit={hit} />;
 
