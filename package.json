@@ -1,7 +1,15 @@
 {
   "name": "next-instantsearch",
   "version": "0.0.2",
-  "description": "",
+  "description": "Server side rendering with Next.js and React InstantSearch",
+  "keywords": [
+    "next",
+    "nextjs",
+    "algolia",
+    "instantsearch",
+    "react-instantsearch",
+    "algolia-search"
+  ],
   "main": "build/index.js",
   "files": [
     "build"
@@ -15,7 +23,7 @@
     "postversion": "git push && git push --tags"
   },
   "author": "Stuart Williams",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/enzyme": "^3.10.5",
     "@types/enzyme-adapter-react-16": "^1.0.6",
