@@ -94,7 +94,7 @@ export default withInstantSearch({
 
 ## Advanced Usage
 
-Out of the box `next-instantsearch` will trigger shallow route replace when your search state changes.
+Out of the box `next-instantsearch` will trigger a shallow route replace when your search state changes.
 This may not work for you if you're using a non standard router or maybe you want to prevent this route change with a no-op.
 
 ```javascript
@@ -112,8 +112,7 @@ withInstantSearch({
 })(Page);
 ```
 
-You may need to decorate your component with some wrapper components e.g. the `react-redux` store provider.
-This is due to the way `react-instantsearch-dom` handles [server side rendering](https://www.algolia.com/doc/guides/building-search-ui/going-further/server-side-rendering/react/).
+You may need to decorate your component with some wrapper components due to the way `react-instantsearch-dom` handles [server side rendering](https://www.algolia.com/doc/guides/building-search-ui/going-further/server-side-rendering/react/).
 
 ```javascript
 withInstantSearch({
