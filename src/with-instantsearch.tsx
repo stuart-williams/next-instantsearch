@@ -65,13 +65,15 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
     const searchStateFromProps = pageProps?.searchState || {};
     const searchState = merge(searchStateFromPath, searchStateFromProps);
 
-    const App = options.decorate
-      ? options.decorate({
-          ctx,
-          Component: InstantSearchApp,
-          pageProps,
-        })
-      : InstantSearchApp;
+    let App: React.ComponentType = InstantSearchApp;
+    if (options.decorate) {
+      const children = options.decorate({
+        ctx,
+        Component: InstantSearchApp,
+        pageProps,
+      });
+      App = () => children;
+    }
 
     const resultsState = await findResultsState(App, {
       indexName,
