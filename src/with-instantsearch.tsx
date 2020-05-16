@@ -12,6 +12,11 @@ import { createURL, pathToSearchState } from "./utils";
 type WithInstantSearchOptions = {
   searchClient: SearchClient;
   indexName?: string;
+  decorate?: (args: {
+    ctx: NextPageContext;
+    Component: React.FunctionComponent;
+    pageProps: any;
+  }) => any;
   onSearchStateChange?: (searchState: any, router: NextRouter) => any;
 };
 
@@ -60,7 +65,15 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
     const searchStateFromProps = pageProps?.searchState || {};
     const searchState = merge(searchStateFromPath, searchStateFromProps);
 
-    const resultsState = await findResultsState(InstantSearchApp, {
+    const App = options.decorate
+      ? options.decorate({
+          ctx,
+          Component: InstantSearchApp,
+          pageProps,
+        })
+      : InstantSearchApp;
+
+    const resultsState = await findResultsState(App, {
       indexName,
       searchClient: options.searchClient,
       searchState,
