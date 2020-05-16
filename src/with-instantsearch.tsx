@@ -16,7 +16,7 @@ type WithInstantSearchOptions = {
     ctx: NextPageContext;
     Component: React.FunctionComponent;
     pageProps: any;
-  }) => any;
+  }) => React.ReactElement;
   onSearchStateChange?: (searchState: any, router: NextRouter) => any;
 };
 
@@ -73,6 +73,7 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
         pageProps,
       });
       App = () => children;
+      App.displayName = "DecoratedInstantSearchApp";
     }
 
     const resultsState = await findResultsState(App, {

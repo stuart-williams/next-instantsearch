@@ -1,36 +1,89 @@
 const mockFindResultsState = jest.fn().mockResolvedValue("some results");
 
-import algoliasearch from "algoliasearch/lite";
-import { mount } from "enzyme";
-import { NextPageContext } from "next";
-import React from "react";
-
-import withInstantSearch from "./with-instantsearch";
-
 jest.mock("react-instantsearch-dom/server", () => ({
   findResultsState: mockFindResultsState,
 }));
 
+import algoliasearch from "algoliasearch/lite";
+import { mount } from "enzyme";
+import { NextComponentType, NextPageContext } from "next";
+import React from "react";
+import { InstantSearch } from "react-instantsearch-dom";
+
+import { createURL } from "./utils";
+import withInstantSearch from "./with-instantsearch";
+
 describe("withInstantSearch", () => {
-  const indexName = "some_index";
   const searchClient = algoliasearch("app_id", "api_key");
+  const ctx = {
+    asPath: "/?refinementList%5Bcategories%5D%5B0%5D=Appliances&page=1",
+  } as NextPageContext;
 
-  it("should handle SSR", async () => {
-    const asPath = "/?refinementList%5Bcategories%5D%5B0%5D=Appliances&page=1";
+  let Component: NextComponentType | any;
+  let expectedSearchState: any;
 
-    const expectedSearchState = {
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    Component = () => null;
+    Component.getInitialProps = jest.fn().mockResolvedValue({});
+
+    expectedSearchState = {
+      refinementList: {
+        categories: ["Appliances"],
+      },
+      page: "1",
+    };
+  });
+
+  it("should call Component.getInitialProps", async () => {
+    const InstantSearchApp = withInstantSearch({ searchClient })(Component);
+    await InstantSearchApp.getInitialProps(ctx);
+
+    expect(Component.getInitialProps).toBeCalledWith(ctx);
+  });
+
+  it("should use indexName from options", async () => {
+    const InstantSearchApp = withInstantSearch({
+      indexName: "foo",
+      searchClient,
+    })(Component);
+
+    const pageProps = await InstantSearchApp.getInitialProps(ctx);
+
+    expect(pageProps.indexName).toBe("foo");
+  });
+
+  it("should use indexName from component pageProps", async () => {
+    Component.getInitialProps = jest.fn().mockResolvedValue({
+      indexName: "bar",
+    });
+
+    const InstantSearchApp = withInstantSearch({
+      searchClient,
+    })(Component);
+
+    const pageProps = await InstantSearchApp.getInitialProps(ctx);
+
+    expect(pageProps.indexName).toBe("bar");
+  });
+
+  it("should extract searchState from ctx.asPath", async () => {
+    const InstantSearchApp = withInstantSearch({ searchClient })(Component);
+    const pageProps = await InstantSearchApp.getInitialProps(ctx);
+
+    expect(pageProps.searchState).toEqual(expectedSearchState);
+  });
+
+  it("should merge searchState from component pageProps", async () => {
+    expectedSearchState = {
       refinementList: {
         categories: ["Appliances", "TV & Home Theater"],
       },
       page: "1",
     };
 
-    const ctx = { asPath } as NextPageContext;
-
-    // Create mock page component
-    const Component = () => null;
     Component.getInitialProps = jest.fn().mockResolvedValue({
-      foo: true,
       searchState: {
         refinementList: {
           categories: ["TV & Home Theater"],
@@ -38,58 +91,111 @@ describe("withInstantSearch", () => {
       },
     });
 
-    // Wrap it with hoc
-    const WrappedComponent = withInstantSearch({ indexName, searchClient })(
+    const InstantSearchApp = withInstantSearch({ searchClient })(Component);
+    const pageProps = await InstantSearchApp.getInitialProps(ctx);
+
+    expect(pageProps.searchState).toEqual(expectedSearchState);
+  });
+
+  it("should call options.decorate", async () => {
+    Component.getInitialProps = jest.fn().mockResolvedValue({
+      foo: "bar",
+    });
+
+    const decorate = jest.fn();
+
+    const InstantSearchApp = withInstantSearch({ searchClient, decorate })(
       Component
     );
 
-    // Simulate getInitialProps lifecycle
-    const pageProps = await WrappedComponent.getInitialProps(ctx);
+    await InstantSearchApp.getInitialProps(ctx);
 
-    // Check wrapped component getInitialProps was called
-    expect(Component.getInitialProps).toHaveBeenCalledWith(ctx);
+    expect(decorate).toHaveBeenCalledWith({
+      ctx,
+      Component: InstantSearchApp,
+      pageProps: {
+        foo: "bar",
+      },
+    });
+  });
 
-    // Check react-instantsearch-dom/server SSR function was called
-    expect(mockFindResultsState.mock.calls[0][1]).toEqual({
-      indexName,
+  it("should call findResultsState with InstantSearchApp", async () => {
+    const InstantSearchApp = withInstantSearch({
+      indexName: "foo",
+      searchClient,
+    })(Component);
+
+    await InstantSearchApp.getInitialProps(ctx);
+
+    expect(mockFindResultsState).toHaveBeenCalledWith(InstantSearchApp, {
+      indexName: "foo",
       searchClient,
       searchState: expectedSearchState,
     });
+  });
 
-    // Check pageProps contains merged searchState and SSR resultsState
+  it("should call findResultsState with DecoratedInstantSearchApp", async () => {
+    const InstantSearchApp = withInstantSearch({
+      indexName: "foo",
+      searchClient,
+      decorate: ({ Component: ComponentProp, pageProps }) => (
+        <div id="Provider">
+          <ComponentProp {...pageProps} />
+        </div>
+      ),
+    })(Component);
+
+    await InstantSearchApp.getInitialProps(ctx);
+
+    const DecoratedInstantSearchApp = mockFindResultsState.mock.calls[0][0];
+    const wrapper = mount(<DecoratedInstantSearchApp />);
+
+    expect(wrapper.exists("#Provider")).toEqual(true);
+    expect(wrapper.exists(InstantSearchApp)).toEqual(true);
+  });
+
+  it("should return expected pageProps", async () => {
+    const InstantSearchApp = withInstantSearch({
+      indexName: "foo",
+      searchClient,
+    })(Component);
+
+    const pageProps = await InstantSearchApp.getInitialProps(ctx);
+
     expect(pageProps).toEqual({
-      foo: true,
-      indexName,
-      searchState: expectedSearchState,
+      indexName: "foo",
       resultsState: "some results",
+      searchState: expectedSearchState,
     });
+  });
 
-    // Set resultsState undefined to prevent InstantSearch crapping out
-    const wrapper = mount(
-      <WrappedComponent {...pageProps} resultsState={undefined} bar={true} />
-    );
+  it("should hoist statics", () => {
+    Component.foo = "bar";
 
-    // Check correct props are passed to the InstantSearch provider
-    expect(wrapper.find("InstantSearch").prop("indexName")).toEqual(indexName);
-    expect(wrapper.find("InstantSearch").prop("searchState")).toEqual(
-      expectedSearchState
-    );
-    expect(wrapper.find("InstantSearch").prop("searchClient")).toEqual(
-      searchClient
-    );
-    expect(wrapper.find("InstantSearch").prop("createURL")).toEqual(
-      expect.any(Function)
-    );
-    expect(wrapper.find("InstantSearch").prop("onSearchStateChange")).toEqual(
-      expect.any(Function)
-    );
+    const InstantSearchApp = withInstantSearch({ searchClient })(Component);
 
-    // Check correct props are passed to the wrapped component
-    expect(wrapper.find(Component).props()).toEqual(
-      expect.objectContaining({
-        foo: true,
-        bar: true,
-      })
-    );
+    expect(InstantSearchApp.foo).toEqual(Component.foo);
+  });
+
+  it("should render InstantSearch with correct props", async () => {
+    const InstantSearchApp = withInstantSearch({
+      indexName: "foo",
+      searchClient,
+    })(Component);
+
+    const pageProps = await InstantSearchApp.getInitialProps(ctx);
+
+    const wrapper = mount(<InstantSearchApp {...pageProps} />);
+    const is = wrapper.find(InstantSearch);
+
+    expect(is.prop("indexName")).toEqual("foo");
+    expect(is.prop("searchState")).toEqual(expectedSearchState);
+    expect(is.prop("searchClient")).toEqual(searchClient);
+    expect(is.prop("createURL")).toEqual(createURL);
+    expect(is.prop("onSearchStateChange")).toEqual(expect.any(Function));
+  });
+
+  it.skip("should... onSearchStateChange", () => {
+    expect(false).toBe(true);
   });
 });
