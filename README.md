@@ -91,3 +91,38 @@ export default withInstantSearch({
   searchClient,
 })(Page);
 ```
+
+## Advanced Usage
+
+Out of the box `next-instantsearch` will trigger shallow route replace when your search state changes.
+This may not work for you if you're using a non standard router or maybe you want to prevent this route change with a no-op.
+
+```javascript
+import { withInstantSearch, createURL } from "next-instantsearch";
+
+withInstantSearch({
+  indexName: "your_index",
+  searchClient,
+  onSearchStateChange: (searchState, { pathname, query, asPath }) => {
+    const href = { pathname, query };
+    const as = url.parse(asPath).pathname + createURL(searchState);
+
+    Router.replace(href, as, { shallow: true });
+  },
+})(Page);
+```
+
+You may need to decorate your component with some wrapper components e.g. the `react-redux` store provider.
+This is due to the way `react-instantsearch-dom` handles [server side rendering](https://www.algolia.com/doc/guides/building-search-ui/going-further/server-side-rendering/react/).
+
+```javascript
+withInstantSearch({
+  indexName: "your_index",
+  searchClient,
+  decorate: ({ ctx, Component, pageProps }) => (
+    <Provider store={ctx.store}>
+      <Component {...pageProps} />
+    </Provider>
+  ),
+})(Page);
+```

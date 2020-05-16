@@ -34,7 +34,7 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
       if (options.onSearchStateChange) {
         options.onSearchStateChange(state, router);
       } else {
-        router.push(router.pathname, router.asPath + createURL(state), {
+        router.replace(router.pathname, router.asPath + createURL(state), {
           shallow: true,
         });
       }
