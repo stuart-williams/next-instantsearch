@@ -81,6 +81,8 @@ const Page = () => (
 
 Page.getInitialProps = async () => ({
   indexName: "your_index",
+  // You may want to set some default searchState.
+  // This will be merged on to state from the url.
   searchState: {
     refinementList: {
       categories: ["Appliances"],
