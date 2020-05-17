@@ -1,2 +1,5 @@
-export { default as withInstantSearch } from "./with-instantsearch";
+export {
+  default as withInstantSearch,
+  WithInstantSearchOptions,
+} from "./with-instantsearch";
 export * from "./utils";
