@@ -14,8 +14,7 @@ type WithInstantSearchOptions = {
   indexName?: string;
   decorate?: (args: {
     ctx: NextPageContext;
-    Component: React.FunctionComponent;
-    pageProps: any;
+    component: () => React.ReactElement;
   }) => React.ReactElement;
   onSearchStateChange?: (searchState: any, router: NextRouter) => any;
 };
@@ -66,17 +65,13 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
     const searchStateFromProps = pageProps?.searchState || {};
     const searchState = merge(searchStateFromPath, searchStateFromProps);
 
-    let App: React.ComponentType = InstantSearchApp;
-    if (options.decorate) {
-      const children = options.decorate({
-        ctx,
-        Component: InstantSearchApp,
-        pageProps,
-      });
-      // TODO: Test this!
-      App = (props) => React.cloneElement(children, props);
-      App.displayName = "DecoratedInstantSearchApp";
-    }
+    const App = (props: any) => {
+      const component = () => <InstantSearchApp {...props} {...pageProps} />;
+
+      return options.decorate
+        ? options.decorate({ ctx, component })
+        : component();
+    };
 
     const resultsState = await findResultsState(App, {
       indexName,

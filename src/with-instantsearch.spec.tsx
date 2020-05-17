@@ -1,4 +1,10 @@
-const mockFindResultsState = jest.fn().mockResolvedValue("some results");
+const mockFindResultsState = jest.fn().mockImplementation(
+  (App, props) =>
+    new Promise((resolve) => {
+      if (App) App(props);
+      resolve("some results");
+    })
+);
 
 jest.mock("react-instantsearch-dom/server", () => ({
   findResultsState: mockFindResultsState,
@@ -110,13 +116,12 @@ describe("withInstantSearch", () => {
 
     await InstantSearchApp.getInitialProps(ctx);
 
-    expect(decorate).toHaveBeenCalledWith({
-      ctx,
-      Component: InstantSearchApp,
-      pageProps: {
-        foo: "bar",
-      },
-    });
+    expect(decorate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ctx,
+        component: expect.any(Function),
+      })
+    );
   });
 
   it("should call findResultsState with InstantSearchApp", async () => {
@@ -127,31 +132,34 @@ describe("withInstantSearch", () => {
 
     await InstantSearchApp.getInitialProps(ctx);
 
-    expect(mockFindResultsState).toHaveBeenCalledWith(InstantSearchApp, {
+    const App = mockFindResultsState.mock.calls[0][0];
+    // Check that props from findResultsState are passed down to InstantSearch
+    const wrapper = mount(<App propFromSSR={true} />);
+
+    expect(wrapper.find(InstantSearchApp).prop("propFromSSR")).toEqual(true);
+
+    expect(mockFindResultsState.mock.calls[0][1]).toEqual({
       indexName: "foo",
       searchClient,
       searchState: expectedSearchState,
     });
   });
 
-  it("should call findResultsState with DecoratedInstantSearchApp", async () => {
+  it("should call findResultsState with decorated InstantSearchApp", async () => {
     const InstantSearchApp = withInstantSearch({
       indexName: "foo",
       searchClient,
-      decorate: ({ Component: ComponentProp, pageProps }) => (
-        <div id="Provider">
-          <ComponentProp {...pageProps} />
-        </div>
-      ),
+      decorate: ({ component }) => <div id="Provider">{component()}</div>,
     })(Component);
 
     await InstantSearchApp.getInitialProps(ctx);
 
-    const DecoratedInstantSearchApp = mockFindResultsState.mock.calls[0][0];
-    const wrapper = mount(<DecoratedInstantSearchApp />);
+    const App = mockFindResultsState.mock.calls[0][0];
+    const wrapper = mount(<App propFromSSR={true} />);
 
     expect(wrapper.exists("#Provider")).toEqual(true);
-    expect(wrapper.exists(InstantSearchApp)).toEqual(true);
+    // Check that props from findResultsState are passed down to InstantSearch
+    expect(wrapper.find(InstantSearchApp).prop("propFromSSR")).toEqual(true);
   });
 
   it("should return expected pageProps", async () => {
