@@ -107,6 +107,9 @@ withInstantSearch({
   searchClient,
   onSearchStateChange: (searchState) => onSearchStateChange(searchState, Router),
   // onSearchStateChange: () => {} // Prevent route change
+  // onSearchStateChange: (searchState, Router) => {
+    // ... Some custom implementation ...
+  }
 })(Page);
 ```
 
