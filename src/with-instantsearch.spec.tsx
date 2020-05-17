@@ -185,11 +185,15 @@ describe("withInstantSearch", () => {
 
     const pageProps = await InstantSearchApp.getInitialProps(ctx);
 
-    const wrapper = mount(<InstantSearchApp {...pageProps} />);
+    // TODO: figure out how to mock resultsState
+    const wrapper = mount(
+      <InstantSearchApp {...pageProps} resultsState={null} />
+    );
     const is = wrapper.find(InstantSearch);
 
     expect(is.prop("indexName")).toEqual("foo");
     expect(is.prop("searchState")).toEqual(expectedSearchState);
+    expect(is.prop("resultsState")).toEqual(null);
     expect(is.prop("searchClient")).toEqual(searchClient);
     expect(is.prop("createURL")).toEqual(createURL);
     expect(is.prop("onSearchStateChange")).toEqual(expect.any(Function));

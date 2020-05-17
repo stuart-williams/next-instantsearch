@@ -44,6 +44,7 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
       <InstantSearch
         indexName={indexName}
         searchState={searchState}
+        resultsState={props.resultsState}
         searchClient={options.searchClient}
         createURL={createURL}
         onSearchStateChange={handleSearchStateChange}
