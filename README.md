@@ -118,10 +118,8 @@ You may need to decorate your component with some wrapper components due to the 
 withInstantSearch({
   indexName: "your_index",
   searchClient,
-  decorate: ({ ctx, Component, pageProps }) => (
-    <Provider store={ctx.store}>
-      <Component {...pageProps} />
-    </Provider>
+  decorate: ({ ctx, component }) => (
+    <Provider store={ctx.store}>{component()}</Provider>
   ),
 })(Page);
 ```
