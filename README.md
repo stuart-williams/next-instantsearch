@@ -3,6 +3,7 @@
 [![npm version](https://badge.fury.io/js/next-instantsearch.svg)](https://badge.fury.io/js/next-instantsearch)
 ![Test](https://github.com/stuart-williams/next-instantsearch/workflows/Test/badge.svg)
 ![Publish](https://github.com/stuart-williams/next-instantsearch/workflows/Publish/badge.svg)
+![Bundlephobia](https://badgen.net/bundlephobia/minzip/next-instantsearch)
 
 **Server side rendering with Next.js and React InstantSearch**
 
