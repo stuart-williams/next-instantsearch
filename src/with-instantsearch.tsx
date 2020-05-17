@@ -73,7 +73,8 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
         Component: InstantSearchApp,
         pageProps,
       });
-      App = () => children;
+      // TODO: Test this!
+      App = (props) => React.cloneElement(children, props);
       App.displayName = "DecoratedInstantSearchApp";
     }
 
