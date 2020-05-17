@@ -7,7 +7,11 @@ import React, { useState } from "react";
 import { InstantSearch } from "react-instantsearch-dom";
 import { findResultsState } from "react-instantsearch-dom/server";
 
-import { createURL, pathToSearchState } from "./utils";
+import {
+  createURL,
+  onSearchStateChange as defaultOnSearchStateChange,
+  pathToSearchState,
+} from "./utils";
 
 type WithInstantSearchOptions = {
   searchClient: SearchClient;
@@ -22,6 +26,9 @@ type WithInstantSearchOptions = {
 const withInstantSearch = (options: WithInstantSearchOptions) => (
   WrappedComponent: NextComponentType | any
 ) => {
+  const onSearchStateChange =
+    options.onSearchStateChange || defaultOnSearchStateChange;
+
   const InstantSearchApp = (props: any) => {
     const [searchState, setSearchState] = useState(props.searchState);
     const router = useRouter();
@@ -29,16 +36,7 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
 
     const handleSearchStateChange = (state: any) => {
       setSearchState(state);
-
-      if (options.onSearchStateChange) {
-        options.onSearchStateChange(state, router);
-      } else {
-        const href = router.pathname;
-        const [pathname] = router.asPath.split("?");
-        const as = pathname + createURL(state);
-
-        router.replace(href, as, { shallow: true });
-      }
+      onSearchStateChange(state, router);
     };
 
     return (

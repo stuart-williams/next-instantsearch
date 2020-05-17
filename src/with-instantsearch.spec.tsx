@@ -10,10 +10,17 @@ jest.mock("react-instantsearch-dom/server", () => ({
   findResultsState: mockFindResultsState,
 }));
 
+jest.mock("next/router", () => ({
+  useRouter: () => "router instance",
+}));
+
+jest.unmock("./utils");
+
 import algoliasearch from "algoliasearch/lite";
 import { mount } from "enzyme";
 import { NextComponentType, NextPageContext } from "next";
 import React from "react";
+import ReactTestUtils from "react-dom/test-utils";
 import { InstantSearch } from "react-instantsearch-dom";
 
 import { createURL } from "./utils";
@@ -65,9 +72,7 @@ describe("withInstantSearch", () => {
       indexName: "bar",
     });
 
-    const InstantSearchApp = withInstantSearch({
-      searchClient,
-    })(Component);
+    const InstantSearchApp = withInstantSearch({ searchClient })(Component);
 
     const pageProps = await InstantSearchApp.getInitialProps(ctx);
 
@@ -207,7 +212,59 @@ describe("withInstantSearch", () => {
     expect(is.prop("onSearchStateChange")).toEqual(expect.any(Function));
   });
 
-  it.skip("should... onSearchStateChange", () => {
-    expect(false).toBe(true);
+  it("should should call default onSearchStateChange handler", () => {
+    const utils = require("./utils");
+    utils.onSearchStateChange = jest.fn();
+
+    const InstantSearchApp = withInstantSearch({
+      indexName: "foo",
+      searchClient,
+    })(Component);
+
+    const wrapper = mount(<InstantSearchApp searchState={{}} />);
+
+    const callback =
+      wrapper.find(InstantSearch).prop("onSearchStateChange") || jest.fn();
+
+    ReactTestUtils.act(() => {
+      callback({
+        foo: true,
+      });
+    });
+
+    expect(utils.onSearchStateChange).toHaveBeenCalledWith(
+      {
+        foo: true,
+      },
+      "router instance"
+    );
+  });
+
+  it("should should call options.onSearchStateChange handler", () => {
+    const onSearchStateChange = jest.fn();
+
+    const InstantSearchApp = withInstantSearch({
+      indexName: "foo",
+      searchClient,
+      onSearchStateChange,
+    })(Component);
+
+    const wrapper = mount(<InstantSearchApp searchState={{}} />);
+
+    const callback =
+      wrapper.find(InstantSearch).prop("onSearchStateChange") || jest.fn();
+
+    ReactTestUtils.act(() => {
+      callback({
+        foo: true,
+      });
+    });
+
+    expect(onSearchStateChange).toHaveBeenCalledWith(
+      {
+        foo: true,
+      },
+      "router instance"
+    );
   });
 });

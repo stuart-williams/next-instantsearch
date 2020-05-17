@@ -1,4 +1,8 @@
-import { createURL, pathToSearchState } from "./utils";
+import Router from "next/router";
+
+import { createURL, onSearchStateChange, pathToSearchState } from "./utils";
+
+jest.mock("next/router");
 
 describe("createURL", () => {
   it("should return url as expected", () => {
@@ -37,5 +41,47 @@ describe("pathToSearchState", () => {
 
   it("should return empty search state", () => {
     expect(pathToSearchState("/foo/")).toEqual({});
+  });
+});
+
+describe("onSearchStateChange", () => {
+  it("should call Router.replace with search state in url", () => {
+    const searchState = {
+      refinementList: {
+        categories: ["Appliances"],
+      },
+    };
+
+    Router.pathname = "/foo/[slug]";
+    Router.asPath = "/foo/bar";
+
+    onSearchStateChange(searchState, Router);
+
+    expect(Router.replace).toHaveBeenCalledWith(
+      "/foo/[slug]",
+      "/foo/bar?refinementList%5Bcategories%5D%5B0%5D=Appliances",
+      { shallow: true }
+    );
+  });
+
+  it("should merge searchState on top of existing query params", () => {
+    const searchState = {
+      page: "2",
+      refinementList: {
+        categories: ["Appliances"],
+      },
+    };
+
+    Router.pathname = "/foo/[slug]";
+    Router.asPath =
+      "/foo/bar?foo=bar&refinementList%5Bcategories%5D%5B0%5D=Kitcken";
+
+    onSearchStateChange(searchState, Router);
+
+    expect(Router.replace).toHaveBeenCalledWith(
+      "/foo/[slug]",
+      "/foo/bar?foo=bar&refinementList%5Bcategories%5D%5B0%5D=Kitcken&refinementList%5Bcategories%5D%5B1%5D=Appliances&page=2",
+      { shallow: true }
+    );
   });
 });

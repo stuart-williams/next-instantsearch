@@ -25,6 +25,13 @@
   },
   "author": "Stuart Williams",
   "license": "MIT",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom",
+    "setupFiles": [
+      "<rootDir>/jest.setup.ts"
+    ]
+  },
   "devDependencies": {
     "@types/enzyme": "^3.10.5",
     "@types/enzyme-adapter-react-16": "^1.0.6",
@@ -33,6 +40,7 @@
     "@types/node": "^14.0.1",
     "@types/qs": "^6.9.2",
     "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
     "@types/react-instantsearch-dom": "^6.3.0",
     "algoliasearch": "^4.2.0",
     "enzyme": "^3.11.0",
@@ -46,13 +54,6 @@
     "tslint": "^6.1.2",
     "tslint-react": "^5.0.0",
     "typescript": "^3.9.2"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "jsdom",
-    "setupFiles": [
-      "<rootDir>/jest.setup.ts"
-    ]
   },
   "dependencies": {
     "hoist-non-react-statics": "^3.3.2",
