@@ -7,11 +7,7 @@ import React, { useState } from "react";
 import { InstantSearch } from "react-instantsearch-dom";
 import { findResultsState } from "react-instantsearch-dom/server";
 
-import {
-  createURL,
-  onSearchStateChange as defaultOnSearchStateChange,
-  pathToSearchState,
-} from "./utils";
+import * as utils from "./utils";
 
 export type WithInstantSearchOptions = {
   searchClient: SearchClient;
@@ -27,7 +23,7 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
   WrappedComponent: NextComponentType | any
 ) => {
   const onSearchStateChange =
-    options.onSearchStateChange || defaultOnSearchStateChange;
+    options.onSearchStateChange || utils.onSearchStateChange;
 
   const InstantSearchApp = (props: any) => {
     const [searchState, setSearchState] = useState(props.searchState);
@@ -45,7 +41,7 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
         indexName={indexName}
         searchState={searchState}
         searchClient={options.searchClient}
-        createURL={createURL}
+        createURL={utils.createURL}
         onSearchStateChange={handleSearchStateChange}
       >
         <WrappedComponent {...props} />
@@ -59,14 +55,14 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
     const getInitialProps = WrappedComponent.getInitialProps || (() => ({}));
     const pageProps: any = await getInitialProps(ctx);
 
-    const indexName = pageProps?.indexName || options.indexName;
+    const indexName = pageProps.indexName || options.indexName;
 
-    const searchStateFromPath = pathToSearchState(asPath);
-    const searchStateFromProps = pageProps?.searchState || {};
+    const searchStateFromPath = utils.pathToSearchState(asPath);
+    const searchStateFromProps = pageProps.searchState || {};
     const searchState = merge(searchStateFromPath, searchStateFromProps);
 
     const InstantSearchSSR = (props: any) => {
-      const component = () => <InstantSearchApp {...props} {...pageProps} />;
+      const component = () => <InstantSearchApp {...pageProps} {...props} />;
 
       return options.decorate
         ? options.decorate({ ctx, component })
