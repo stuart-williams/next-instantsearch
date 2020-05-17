@@ -1,6 +1,6 @@
 {
   "name": "next-instantsearch",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "repository": "git@github.com:stuart-williams/next-instantsearch.git",
   "description": "Server side rendering with Next.js and React InstantSearch",
   "keywords": [
