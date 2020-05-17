@@ -65,7 +65,7 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
     const searchStateFromProps = pageProps?.searchState || {};
     const searchState = merge(searchStateFromPath, searchStateFromProps);
 
-    const App = (props: any) => {
+    const InstantSearchSSR = (props: any) => {
       const component = () => <InstantSearchApp {...props} {...pageProps} />;
 
       return options.decorate
@@ -73,7 +73,7 @@ const withInstantSearch = (options: WithInstantSearchOptions) => (
         : component();
     };
 
-    const resultsState = await findResultsState(App, {
+    const resultsState = await findResultsState(InstantSearchSSR, {
       indexName,
       searchClient: options.searchClient,
       searchState,
