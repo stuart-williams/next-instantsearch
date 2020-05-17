@@ -13,7 +13,7 @@ import {
   pathToSearchState,
 } from "./utils";
 
-type WithInstantSearchOptions = {
+export type WithInstantSearchOptions = {
   searchClient: SearchClient;
   indexName?: string;
   decorate?: (args: {
