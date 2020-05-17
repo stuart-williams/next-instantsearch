@@ -106,6 +106,7 @@ withInstantSearch({
   indexName: "your_index",
   searchClient,
   onSearchStateChange: (searchState) => onSearchStateChange(searchState, Router),
+  // onSearchStateChange: () => {} // Prevent route change
 })(Page);
 ```
 
