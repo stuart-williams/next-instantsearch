@@ -99,17 +99,13 @@ Out of the box `next-instantsearch` will trigger a shallow route replace when yo
 This may not work for you if you're using a non standard router or maybe you want to prevent this route change with a no-op.
 
 ```javascript
-import { withInstantSearch, createURL } from "next-instantsearch";
+import { withInstantSearch, createURL, onSearchStateChange } from "next-instantsearch";
+import { Router } from "../i18n";
 
 withInstantSearch({
   indexName: "your_index",
   searchClient,
-  onSearchStateChange: (searchState, { pathname, query, asPath }) => {
-    const href = { pathname, query };
-    const as = url.parse(asPath).pathname + createURL(searchState);
-
-    Router.replace(href, as, { shallow: true });
-  },
+  onSearchStateChange: (searchState) => onSearchStateChange(searchState, Router),
 })(Page);
 ```
 
