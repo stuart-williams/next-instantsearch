@@ -53,14 +53,22 @@ describe("onSearchStateChange", () => {
     };
 
     Router.pathname = "/foo/[slug]";
+    Router.query = { slug: "bar" };
     Router.asPath = "/foo/bar";
 
     onSearchStateChange(searchState, Router);
 
     expect(Router.replace).toHaveBeenCalledWith(
-      "/foo/[slug]",
+      {
+        pathname: "/foo/[slug]",
+        query: {
+          slug: "bar",
+        },
+      },
       "/foo/bar?refinementList%5Bcategories%5D%5B0%5D=Appliances",
-      { shallow: true }
+      {
+        shallow: true,
+      }
     );
   });
 
@@ -73,15 +81,23 @@ describe("onSearchStateChange", () => {
     };
 
     Router.pathname = "/foo/[slug]";
+    Router.query = { slug: "bar" };
     Router.asPath =
       "/foo/bar?foo=bar&refinementList%5Bcategories%5D%5B0%5D=Kitcken";
 
     onSearchStateChange(searchState, Router);
 
     expect(Router.replace).toHaveBeenCalledWith(
-      "/foo/[slug]",
+      {
+        pathname: "/foo/[slug]",
+        query: {
+          slug: "bar",
+        },
+      },
       "/foo/bar?foo=bar&refinementList%5Bcategories%5D%5B0%5D=Kitcken&refinementList%5Bcategories%5D%5B1%5D=Appliances&page=2",
-      { shallow: true }
+      {
+        shallow: true,
+      }
     );
   });
 });

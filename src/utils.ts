@@ -8,11 +8,16 @@ export const createURL = (searchState: any) => `?${qs.stringify(searchState)}`;
 export const pathToSearchState = (path: string) =>
   qs.parse(url.parse(path).query || "");
 
-export const onSearchStateChange = (searchState: any, router: NextRouter) => {
-  const href = router.pathname;
-  const { pathname, query } = url.parse(router.asPath);
-  const params = qs.parse(query || "");
-  const as = pathname + createURL(merge(params, searchState));
+export const onSearchStateChange = (searchState: any, Router: NextRouter) => {
+  const urlObject = url.parse(Router.asPath);
+  const urlParams = qs.parse(urlObject.query || "");
 
-  router.replace(href, as, { shallow: true });
+  const href = {
+    pathname: Router.pathname,
+    query: Router.query,
+  };
+
+  const as = urlObject.pathname + createURL(merge(urlParams, searchState));
+
+  Router.replace(href, as, { shallow: true });
 };
