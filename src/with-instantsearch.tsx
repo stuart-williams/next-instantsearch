@@ -3,19 +3,19 @@ import merge from "deepmerge";
 import hoistNonReactStatics from "hoist-non-react-statics";
 import { NextComponentType, NextPageContext } from "next";
 import { NextRouter, useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import { InstantSearch } from "react-instantsearch-dom";
 import { findResultsState } from "react-instantsearch-dom/server";
 
 import * as utils from "./utils";
 
 export type WithInstantSearchOptions = {
-  searchClient: SearchClient;
   indexName?: string;
+  searchClient: SearchClient;
   decorate?: (args: {
     ctx: NextPageContext;
-    component: () => React.ReactElement;
-  }) => React.ReactElement;
+    component: () => ReactElement;
+  }) => ReactElement;
   onSearchStateChange?: (searchState: any, router: NextRouter) => any;
 };
 
