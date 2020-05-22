@@ -13,6 +13,8 @@
 
 `next-instantsearch` is only compatible with InstantSearch v6. See the [upgrade guides](https://www.algolia.com/doc/guides/building-search-ui/upgrade-guides/react/) for more info.
 
+View the [simple example](https://github.com/stuart-williams/next-instantsearch/tree/master/examples/simple) based on the [`react-instantsearch`] Next.js exampe](https://github.com/algolia/react-instantsearch/tree/master/examples/next).
+
 ## Installation
 
 ```sh
