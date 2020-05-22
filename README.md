@@ -11,6 +11,8 @@
 
 `next-instantsearch` is a plugin for [Next.js](https://nextjs.org/) projects that allows you to easily configure your [Algolia](https://www.algolia.com/) powered [InstantSearch](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react/) app, while fully supporting SSR.
 
+`next-instantsearch` is only compatible with InstantSearch v6. See the [upgrade guides](https://www.algolia.com/doc/guides/building-search-ui/upgrade-guides/react/) for more info.
+
 ## Installation
 
 ```sh
