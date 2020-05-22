@@ -13,7 +13,7 @@
 
 The current version of this library is only compatible with InstantSearch v6 or greater. See the [upgrade guides](https://www.algolia.com/doc/guides/building-search-ui/upgrade-guides/react/) for more info.
 
-Check out the [simple example](https://github.com/stuart-williams/next-instantsearch/tree/master/examples/simple) based on the [`react-instantsearch` next example](https://github.com/algolia/react-instantsearch/tree/master/examples/next).
+View a [live demo](https://next-instantsearch.now.sh/) of the [simple example](https://github.com/stuart-williams/next-instantsearch/tree/master/examples/simple) based on the [`react-instantsearch` next example](https://github.com/algolia/react-instantsearch/tree/master/examples/next).
 
 ## Installation
 
