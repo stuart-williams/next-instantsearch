@@ -72,7 +72,7 @@ describe("onSearchStateChange", () => {
     );
   });
 
-  it("should merge searchState on top of existing query params", () => {
+  it("should update searchState", () => {
     const searchState = {
       page: "2",
       refinementList: {
@@ -94,7 +94,7 @@ describe("onSearchStateChange", () => {
           slug: "bar",
         },
       },
-      "/foo/bar?foo=bar&refinementList%5Bcategories%5D%5B0%5D=Kitcken&refinementList%5Bcategories%5D%5B1%5D=Appliances&page=2",
+      "/foo/bar?foo=bar&refinementList%5Bcategories%5D%5B0%5D=Appliances&page=2",
       {
         shallow: true,
       }

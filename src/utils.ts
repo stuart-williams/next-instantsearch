@@ -1,4 +1,3 @@
-import merge from "deepmerge";
 import { NextRouter } from "next/router";
 import qs from "qs";
 import url from "url";
@@ -17,7 +16,7 @@ export const onSearchStateChange = (searchState: any, Router: NextRouter) => {
     query: Router.query,
   };
 
-  const as = urlObject.pathname + createURL(merge(urlParams, searchState));
+  const as = urlObject.pathname + createURL({ ...urlParams, ...searchState });
 
   Router.replace(href, as, { shallow: true });
 };
