@@ -7,6 +7,10 @@
 
 **Server side rendering with Next.js and React InstantSearch**
 
+## What is it?
+
+`next-instantsearch` is a plugin for [Next.js](https://nextjs.org/) projects that allows you to easily configure your [Algolia](https://www.algolia.com/) powered [InstantSearch](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react/) app, while fully supporting SSR.
+
 ## Installation
 
 ```sh
