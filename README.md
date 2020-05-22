@@ -125,7 +125,7 @@ withInstantSearch({
 })(Page);
 ```
 
-You may need to decorate your component with some wrapper components due to the way `react-instantsearch-dom` handles [server side rendering](https://www.algolia.com/doc/guides/building-search-ui/going-further/server-side-rendering/react/).
+During SSR `react-instantsearch` will call `renderToString` on your component, meaning your component is rendered outside of the context of your app. For this reason you may need to wrap your component with some context providers etc. More info on `react-instantsearch` SSR can be found [here](https://www.algolia.com/doc/guides/building-search-ui/going-further/server-side-rendering/react/).
 
 ```javascript
 withInstantSearch({
