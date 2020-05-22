@@ -8,7 +8,11 @@
     "start": "next start"
   },
   "dependencies": {
-    "next": "^9.4.1",
-    "next-instantsearch": "^0.3.11"
+    "algoliasearch": "^4.2.0",
+    "next": "^9.4.2",
+    "next-instantsearch": "^0.3.14",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-instantsearch-dom": "^6.5.0"
   }
 }
