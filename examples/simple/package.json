@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "algoliasearch": "^4.8.3",
-    "next": "^10.0.3",
+    "next": "^11.1.1",
     "next-instantsearch": "^0.3.15",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
