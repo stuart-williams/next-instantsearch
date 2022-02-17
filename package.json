@@ -46,7 +46,7 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "jest": "^26.0.1",
-    "next": "^10.0.3",
+    "next": "^12.1.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-instantsearch-dom": "^6.5.0",
